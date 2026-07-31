@@ -3,7 +3,7 @@ local utils = require("harpoon.utils")
 ---@class HarpoonLog
 ---@field lines string[]
 ---@field max_lines number
----@field enabled boolean not used yet, but if we get reports of slow, we will use this
+---@field enabled boolean
 local HarpoonLog = {}
 
 HarpoonLog.__index = HarpoonLog
@@ -12,7 +12,7 @@ HarpoonLog.__index = HarpoonLog
 function HarpoonLog:new()
     local logger = setmetatable({
         lines = {},
-        enabled = true,
+        enabled = false,
         max_lines = 50,
     }, self)
 
@@ -29,6 +29,10 @@ end
 
 ---@vararg any
 function HarpoonLog:log(...)
+    if not self.enabled then
+        return
+    end
+
     local processed = {}
     for i = 1, select("#", ...) do
         local item = select(i, ...)

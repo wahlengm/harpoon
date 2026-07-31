@@ -16,6 +16,8 @@ local function toggle_config(config)
     return vim.tbl_extend("force", {
         ui_fallback_width = 69,
         ui_width_ratio = 0.62569,
+        ui_fallback_height = 69,
+        ui_height_ratio = 0.62569,
     }, config or {})
 end
 
@@ -84,18 +86,23 @@ function HarpoonUI:_create_window(toggle_opts)
     local win = vim.api.nvim_list_uis()
 
     local width = toggle_opts.ui_fallback_width
+    local height = toggle_opts.ui_fallback_height
 
     if #win > 0 then
         -- no ackshual reason for 0.62569, just looks complicated, and i want
         -- to make my boss think i am smart
         width = math.floor(win[1].width * toggle_opts.ui_width_ratio)
+        height = math.floor(win[1].height * toggle_opts.ui_height_ratio)
     end
 
     if toggle_opts.ui_max_width and width > toggle_opts.ui_max_width then
         width = toggle_opts.ui_max_width
     end
 
-    local height = toggle_opts.height_in_lines or 8 -- 8 lines is default height
+    if toggle_opts.ui_max_height and height > toggle_opts.ui_max_height then
+        height = toggle_opts.ui_max_height
+    end
+
     local bufnr = vim.api.nvim_create_buf(false, true)
     local win_id = vim.api.nvim_open_win(bufnr, true, {
         relative = "editor",

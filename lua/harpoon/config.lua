@@ -1,9 +1,19 @@
 local Extensions = require("harpoon.extensions")
 local Logger = require("harpoon.logger")
 local Path = require("plenary.path")
-local function normalize_path(buf_name, root)
-    return Path:new(buf_name):make_relative(root)
+
+-- Need to normalize paths to \ rather than / otherwise plenary gets confused.
+local function normalize_slashes(path)
+    result, _ = path:gsub("/", Path.path.sep)
+    return result
 end
+
+local function normalize_path(buf_name, root)
+    n_buf_name = normalize_slashes(buf_name)
+    n_root = normalize_slashes(root)
+    return Path:new(n_buf_name):make_relative(n_root)
+end
+
 local function to_exact_name(value)
     return "^" .. value .. "$"
 end

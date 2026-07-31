@@ -138,6 +138,13 @@ function HarpoonList:add(item)
     Logger:log("HarpoonList:add", { item = item, index = index })
 
     if index == -1 then
+
+        -- I don't want empty list elements cause ew
+        if item.value == "" then
+            Logger:log("HarpoonList:add", "Tried to add unnamed buffer")
+            return self
+        end
+
         local idx = self._length + 1
         for i = 1, self._length + 1 do
             if self.items[i] == nil then
